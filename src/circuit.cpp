@@ -260,7 +260,7 @@ void Circuit::Display()
 {
     for (auto each : input_list_)
     {
-        cout << left << setw(8) << each.name_;
+        cout << left << setw(5) << each.name_ << "-> ";
     }
 }
 
