@@ -1,0 +1,22 @@
+add in 3
+add out 2
+add xor 2
+add and 2
+add or 1
+ls
+con in1 2 xor1 and2
+con in2 2 xor1 and2
+con in3 2 xor2 and1
+con xor1 2 xor2 and1
+con and1 1 or1
+con and2 1 or1
+con xor2 1 out1
+con or1 1 out2
+run
+set in1
+set in2
+set in3
+set in1
+set in2
+set in1
+q
