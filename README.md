@@ -1,4 +1,4 @@
-# [Project] Simple Circuit
+# Simple Circuit
 
 > 程序设计 Ⅱ 期末项目 梁文杰 16303050 数据科学与计算机学院软件工程 17 级教务二班
 
