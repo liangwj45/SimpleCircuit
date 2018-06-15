@@ -21,6 +21,6 @@ $(build)/%.obj : $(src)/%.cpp
 run :
 	$(target)
 
-clear :
+clean :
 	rm $(target)
 	rmdir $(build)
