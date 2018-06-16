@@ -10,7 +10,7 @@ bool Door::Connect(Door &other)
 {
     if (other.input_list_.size() == other.max_input_)
     {
-        throw("Max input");
+        throw("Max input"); // 输入已连满，抛出异常
     }
     other.input_list_.push_back(this);
     connect_list_.push_back(&other);
