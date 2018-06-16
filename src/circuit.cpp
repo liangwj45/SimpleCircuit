@@ -7,82 +7,83 @@ Circuit::~Circuit()
     // 删除所有门
     for (auto each : door_list_)
     {
-        delete each.door_;
-        each.door_ = nullptr;
+        delete each;
+        each = nullptr;
     }
     // 删除所有输入端
     for (auto each : input_list_)
     {
-        delete each.door_;
-        each.door_ = nullptr;
+        delete each;
+        each = nullptr;
     }
     // 删除所有输出端
     for (auto each : output_list_)
     {
-        delete each.door_;
-        each.door_ = nullptr;
+        delete each;
+        each = nullptr;
     }
 }
 
 // 添加门
 bool Circuit::AddDoor(const string &name, int n)
 {
-    Door *door = nullptr;
     string num = to_string(++door_count_[name]); // 给新增的门添加序号
     // 添加输入端
     if (name == "in")
     {
-        input_list_.push_back(CDoor{new IN, name + num});
+        input_list_.push_back(new IN(name + num));
         return true;
     }
     // 添加输出端
-    else if (name == "out")
+    if (name == "out")
     {
-        output_list_.push_back(CDoor{new OUT, name + num});
+        output_list_.push_back(new OUT(name + num));
         return true;
     }
     // 添加非门
-    else if (name == "not")
+    if (name == "not")
     {
-        door = new NOT;
+        door_list_.push_back(new NOT(name + num));
+        return true;
     }
     // 添加 n 输入或门
-    else if (name == "or")
+    if (name == "or")
     {
-        door = new OR(n);
+        door_list_.push_back(new OR(name + num, n));
+        return true;
     }
     // 添加 n 输入与门
-    else if (name == "and")
+    if (name == "and")
     {
-        door = new AND(n);
+        door_list_.push_back(new AND(name + num, n));
+        return true;
     }
     // 添加 n 输入与非门
-    else if (name == "nand")
+    if (name == "nand")
     {
-        door = new NAND(n);
+        door_list_.push_back(new NAND(name + num, n));
+        return true;
     }
     // 添加 n 输入或非门
-    else if (name == "nor")
+    if (name == "nor")
     {
-        door = new NOR(n);
+        door_list_.push_back(new NOR(name + num, n));
+        return true;
     }
     // 添加抑或门
-    else if (name == "xor")
+    if (name == "xor")
     {
-        door = new XOR();
+        door_list_.push_back(new XOR(name + num));
+        return true;
     }
     // 添加同或门
-    else if (name == "nxor")
+    if (name == "nxor")
     {
-        door = new NXOR();
+        door_list_.push_back(new NXOR(name + num));
+        return true;
     }
     // 指定的门不存在
-    else
-    {
-        throw("Nonexist door");
-    }
-    door_list_.push_back(CDoor{door, name + num});
-    return true;
+    throw("Nonexist door");
 }
 
 // 删除门
@@ -94,10 +95,11 @@ bool Circuit::DeleteDoor(const string &name)
     {
         for (auto it = input_list_.begin(); it != input_list_.end(); ++it)
         {
-            if (it->name_ == name)
+            cout << (*it)->GetName() << " =? " << name << endl;
+            if ((*it)->GetName() == name)
             {
                 input_list_.erase(it);
-                it->door_->Delete();
+                (*it)->Delete();
                 return true;
             }
         }
@@ -108,10 +110,10 @@ bool Circuit::DeleteDoor(const string &name)
     {
         for (auto it = output_list_.begin(); it != output_list_.end(); ++it)
         {
-            if (it->name_ == name)
+            if ((*it)->GetName() == name)
             {
                 output_list_.erase(it);
-                it->door_->Delete();
+                (*it)->Delete();
                 return true;
             }
         }
@@ -120,10 +122,10 @@ bool Circuit::DeleteDoor(const string &name)
     // 删除门
     for (auto it = door_list_.begin(); it != door_list_.end(); ++it)
     {
-        if (it->name_ == name)
+        if ((*it)->GetName() == name)
         {
             door_list_.erase(it);
-            it->door_->Delete();
+            (*it)->Delete();
             return true;
         }
     }
@@ -144,12 +146,8 @@ bool Circuit::Connect(const string &a, const string &b)
     }
     Door *door1 = (name1 == "in") ? GetInput(a) : GetDoor(a);
     Door *door2 = (name2 == "ou") ? GetOutput(b) : GetDoor(b);
-    if (!door1 || !door2)
-    {
-        throw("Nonexist door");
-    }
     // 检查是否成环
-    if (!Test(door1, door2))
+    if (!Test(*door1, *door2))
     {
         throw("illegal connect");
     }
@@ -170,10 +168,6 @@ bool Circuit::DisConnect(const string &a, const string &b)
     }
     Door *door1 = (name1 == "in") ? GetInput(a) : GetDoor(a);
     Door *door2 = (name2 == "ou") ? GetOutput(b) : GetDoor(b);
-    if (!door1 || !door2)
-    {
-        throw("Nonexist door");
-    }
     // 尝试删除连接（仍存在连接不匹配导致删除失败的可能）
     return door1->DisConnect(*door2);
 }
@@ -182,11 +176,6 @@ bool Circuit::DisConnect(const string &a, const string &b)
 bool Circuit::SetInput(const string &name)
 {
     Door *door = GetInput(name);
-    if (!door)
-    {
-        throw("Nonexist door");
-    }
-    // 将输入端电平置反
     door->SetInput();
     return true;
 }
@@ -194,59 +183,59 @@ bool Circuit::SetInput(const string &name)
 // 根据门的名称获取相应的门
 Door *Circuit::GetDoor(const string &name)
 {
-    for (auto each : door_list_)
+    for (Door *each : door_list_)
     {
-        if (each.name_ == name)
+        if (each->GetName() == name)
         {
-            return each.door_;
+            return each;
         }
     }
-    return nullptr;
+    throw("Nonexist door");
 }
 
 // 根据输入端的名称获取相应的输入端
 Door *Circuit::GetInput(const string &name)
 {
-    for (auto each : input_list_)
+    for (Door *each : input_list_)
     {
-        if (each.name_ == name)
+        if (each->GetName() == name)
         {
-            return each.door_;
+            return each;
         }
     }
-    return nullptr;
+    throw("Nonexist door");
 }
 
 // 根据输出端的名称获取相应的输出端
 Door *Circuit::GetOutput(const string &name)
 {
-    for (auto each : output_list_)
+    for (Door *each : output_list_)
     {
-        if (each.name_ == name)
+        if (each->GetName() == name)
         {
-            return each.door_;
+            return each;
         }
     }
-    return nullptr;
+    throw("Nonexist door");
 }
 
 // 运行电路
 bool Circuit::Run()
 {
     // 打印输入端的电平
-    for (auto each : input_list_)
+    for (Door *each : input_list_)
     {
-        cout << left << setw(8) << each.name_
-             << (each.door_->GetState() ? "H" : "L")
+        cout << left << setw(8) << each->GetName()
+             << (each->GetState() ? "H" : "L")
              << endl;
     }
     // 打印输出端的电平
-    for (auto each : output_list_)
+    for (Door *each : output_list_)
     {
         try
         {
-            cout << left << setw(8) << each.name_;
-            cout << (each.door_->GetState() ? "H" : "L") << endl;
+            cout << left << setw(8) << each->GetName();
+            cout << (each->GetState() ? "H" : "L") << endl;
         }
         catch (const char *e)
         {
@@ -258,9 +247,31 @@ bool Circuit::Run()
 // 打印连接的情况
 void Circuit::Display()
 {
-    for (auto each : input_list_)
+    // 打印输入端的连接情况
+    for (const Door *each : input_list_)
     {
-        cout << left << setw(5) << each.name_ << "-> " << endl;
+        if (each->GetConnectList().size())
+        {
+            cout << left << setw(5) << each->GetName() << " -> ";
+            for (const Door *door : each->GetConnectList())
+            {
+                cout << " " << door->GetName();
+            }
+            cout << endl;
+        }
+    }
+    // 打印逻辑门的连接情况
+    for (const Door *each : door_list_)
+    {
+        if (each->GetConnectList().size())
+        {
+            cout << left << setw(5) << each->GetName() << " -> ";
+            for (const Door *door : each->GetConnectList())
+            {
+                cout << " " << door->GetName();
+            }
+            cout << endl;
+        }
     }
 }
 
@@ -281,15 +292,15 @@ void Circuit::List()
 }
 
 // 检查连接是否合理
-bool Circuit::Test(Door *a, Door *b)
+bool Circuit::Test(const Door &a, const Door &b) const
 {
-    queue<Door *> que;
-    que.push(b);
+    queue<const Door *> que;
+    que.push(&b);
     while (!que.empty())
     {
-        for (auto each : que.front()->GetConnectList())
+        for (const Door *each : que.front()->GetConnectList())
         {
-            if (each == a)
+            if (each->GetName() == a.GetName())
             {
                 return false;
             }

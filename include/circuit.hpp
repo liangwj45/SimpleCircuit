@@ -12,30 +12,27 @@ using namespace std;
 class Circuit
 {
 public:
-  struct CDoor
-  {
-    Door *door_;
-    string name_;
-  };
   Circuit();
   ~Circuit();
   bool AddDoor(const string &name, int num = 2);
+  bool DeleteDoor(const string &name);
   bool Connect(const string &a, const string &b);
   bool DisConnect(const string &a, const string &b);
   bool SetInput(const string &name);
-  bool DeleteDoor(const string &name);
   void Display();
   bool Run();
   void List();
+
+private:
+  bool Test(const Door &a, const Door &b) const;
   Door *GetDoor(const string &name);
   Door *GetInput(const string &name);
   Door *GetOutput(const string &name);
 
 private:
-  bool Test(Door *a, Door *b);
-  list<CDoor> door_list_;
-  list<CDoor> input_list_;
-  list<CDoor> output_list_;
+  list<Door *> door_list_;
+  list<Door *> input_list_;
+  list<Door *> output_list_;
   map<string, int> door_count_;
 };
 

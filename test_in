@@ -1,3 +1,4 @@
+#full adder
 add in 3
 add out 2
 add xor 2
@@ -12,11 +13,41 @@ con and1 1 or1
 con and2 1 or1
 con xor2 1 out1
 con or1 1 out2
+ds
 run
 set in1
 set in2
 set in3
-set in1
+set in3
 set in2
 set in1
+q
+
+#cycle test (illegal connect)
+add and 3
+ls
+con and1 1 and2
+con and2 1 and3
+con and3 1 and1
+ds
+q
+
+#max intput test1 (max input)
+add in 2
+add out 1
+con in1 1 out1
+con in2 1 out1
+ds
+q
+
+#max input test2
+add in 4
+add out 1
+addn and 3 1
+con and1 1 out1
+con in1 1 and1
+con in2 1 and1
+con in3 1 and1
+con in4 1 and1
+ds
 q

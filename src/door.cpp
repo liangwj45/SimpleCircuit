@@ -1,6 +1,10 @@
 #include "door.hpp"
 
-Door::Door(int num) : output_(false), changed_(true), max_input_(num) {}
+Door::Door(const string &name, int num)
+    : output_(false),
+      name_(name),
+      changed_(true),
+      max_input_(num) {}
 
 bool Door::Connect(Door &other)
 {
@@ -20,7 +24,7 @@ bool Door::DisConnect(Door &other)
     // remove connect in other's input list
     for (auto it = other.input_list_.begin(); it != other.input_list_.end(); ++it)
     {
-        if (*it == this)
+        if ((*it)->name_ == name_)
         {
             other.input_list_.erase(it);
             action = true;
@@ -30,7 +34,7 @@ bool Door::DisConnect(Door &other)
     // remove connect in this connect list
     for (auto it = connect_list_.begin(); it != connect_list_.end(); ++it)
     {
-        if (*it == &other)
+        if ((*it)->name_ == other.name_)
         {
             connect_list_.erase(it);
             action = true;
@@ -59,18 +63,23 @@ void Door::Delete()
 void Door::change()
 {
     changed_ = true;
-    for (auto each : connect_list_)
+    for (Door *each : connect_list_)
     {
         each->change();
     }
 }
 
-list<Door *> Door::GetInputList()
+const string &Door::GetName() const
+{
+    return name_;
+}
+
+const list<Door *> &Door::GetInputList() const
 {
     return input_list_;
 }
 
-list<Door *> Door::GetConnectList()
+const list<Door *> &Door::GetConnectList() const
 {
     return connect_list_;
 }
@@ -111,7 +120,7 @@ bool AND::GetState()
     }
     if (changed_)
     {
-        for (auto each : input_list_)
+        for (Door *each : input_list_)
         {
             if (!each->GetState())
             {
@@ -135,7 +144,7 @@ bool OR::GetState()
     }
     if (changed_)
     {
-        for (auto each : input_list_)
+        for (Door *each : input_list_)
         {
             if (each->GetState())
             {
@@ -174,7 +183,7 @@ bool NAND::GetState()
     }
     if (changed_)
     {
-        for (auto each : input_list_)
+        for (Door *each : input_list_)
         {
             if (!each->GetState())
             {
@@ -198,7 +207,7 @@ bool NOR::GetState()
     }
     if (changed_)
     {
-        for (auto each : input_list_)
+        for (Door *each : input_list_)
         {
             if (each->GetState())
             {

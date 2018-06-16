@@ -1,7 +1,9 @@
 #ifndef _DOOR_
 #define _DOOR_
 #include <list>
+#include <string>
 using std::list;
+using std::string;
 
 // 支持与、或、非、与非、或非、异或、同或功能逻辑门
 // 各类门均为单输出门，输出可连接至多个输入端
@@ -11,14 +13,15 @@ using std::list;
 class Door
 {
 public:
-  Door(int num = 2);
+  Door(const string &name, int num = 2);
   bool Connect(Door &other);
   bool DisConnect(Door &other);
   void Delete();
   virtual bool GetState() = 0;
   virtual bool SetInput() = 0;
-  list<Door *> GetInputList();
-  list<Door *> GetConnectList();
+  const string &GetName() const;
+  const list<Door *> &GetInputList() const;
+  const list<Door *> &GetConnectList() const;
   // 重载 &（与） |（或） ~（非） ^（异或）运算符
   bool operator&(Door &other);
   bool operator|(Door &other);
@@ -32,6 +35,7 @@ protected:
   list<Door *> input_list_;
   list<Door *> connect_list_;
   bool output_;
+  string name_;
   bool changed_;
   int max_input_;
 };
@@ -39,7 +43,7 @@ protected:
 class IN : public Door
 {
 public:
-  IN() : Door(1) {}
+  IN(const string &name) : Door(name, 1) {}
   bool SetInput();
   bool GetState();
 };
@@ -47,7 +51,7 @@ public:
 class OUT : public Door
 {
 public:
-  OUT() : Door(1) {}
+  OUT(const string &name) : Door(name, 1) {}
   bool SetInput() {}
   bool GetState();
 };
@@ -55,7 +59,7 @@ public:
 class AND : public Door
 {
 public:
-  AND(int num = 2) : Door(num) {}
+  AND(const string &name, int num = 2) : Door(name, num) {}
   bool SetInput() {}
   bool GetState();
 };
@@ -63,7 +67,7 @@ public:
 class OR : public Door
 {
 public:
-  OR(int num = 2) : Door(num) {}
+  OR(const string &name, int num = 2) : Door(name, num) {}
   bool SetInput() {}
   bool GetState();
 };
@@ -71,7 +75,7 @@ public:
 class NOT : public Door
 {
 public:
-  NOT() : Door(1) {}
+  NOT(const string &name) : Door(name, 1) {}
   bool SetInput() {}
   bool GetState();
 };
@@ -79,7 +83,7 @@ public:
 class NAND : public Door
 {
 public:
-  NAND(int num = 2) : Door(num) {}
+  NAND(const string &name, int num = 2) : Door(name, num) {}
   bool SetInput() {}
   bool GetState();
 };
@@ -87,7 +91,7 @@ public:
 class NOR : public Door
 {
 public:
-  NOR(int num = 2) : Door(num) {}
+  NOR(const string &name, int num = 2) : Door(name, num) {}
   bool SetInput() {}
   bool GetState();
 };
@@ -95,7 +99,7 @@ public:
 class XOR : public Door
 {
 public:
-  XOR(int num = 2) : Door(num) {}
+  XOR(const string &name) : Door(name, 2) {}
   bool SetInput() {}
   bool GetState();
 };
@@ -103,7 +107,7 @@ public:
 class NXOR : public Door
 {
 public:
-  NXOR(int num = 2) : Door(num) {}
+  NXOR(const string &name) : Door(name, 2) {}
   bool SetInput() {}
   bool GetState();
 };
