@@ -1,16 +1,15 @@
 #ifndef _CIRCUIT_
 #define _CIRCUIT_
 #include "door.hpp"
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include <list>
-#include <string>
 #include <map>
 #include <queue>
+#include <string>
 using namespace std;
 
-class Circuit
-{
+class Circuit {
 public:
   Circuit();
   ~Circuit();

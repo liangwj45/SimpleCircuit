@@ -10,8 +10,7 @@ using std::string;
 // 非门为单输入，异或门、同或门为双输入
 // 其他门均支持多输入
 // 输入IN、输出OUT，也是其中一种特殊的门
-class Door
-{
+class Door {
 public:
   Door(const string &name, int num = 2);
   bool Connect(Door &other);
@@ -40,72 +39,63 @@ protected:
   int max_input_;
 };
 
-class IN : public Door
-{
+class IN : public Door {
 public:
   IN(const string &name) : Door(name, 1) {}
   bool SetInput();
   bool GetState();
 };
 
-class OUT : public Door
-{
+class OUT : public Door {
 public:
   OUT(const string &name) : Door(name, 1) {}
   bool SetInput() {}
   bool GetState();
 };
 
-class AND : public Door
-{
+class AND : public Door {
 public:
   AND(const string &name, int num = 2) : Door(name, num) {}
   bool SetInput() {}
   bool GetState();
 };
 
-class OR : public Door
-{
+class OR : public Door {
 public:
   OR(const string &name, int num = 2) : Door(name, num) {}
   bool SetInput() {}
   bool GetState();
 };
 
-class NOT : public Door
-{
+class NOT : public Door {
 public:
   NOT(const string &name) : Door(name, 1) {}
   bool SetInput() {}
   bool GetState();
 };
 
-class NAND : public Door
-{
+class NAND : public Door {
 public:
   NAND(const string &name, int num = 2) : Door(name, num) {}
   bool SetInput() {}
   bool GetState();
 };
 
-class NOR : public Door
-{
+class NOR : public Door {
 public:
   NOR(const string &name, int num = 2) : Door(name, num) {}
   bool SetInput() {}
   bool GetState();
 };
 
-class XOR : public Door
-{
+class XOR : public Door {
 public:
   XOR(const string &name) : Door(name, 2) {}
   bool SetInput() {}
   bool GetState();
 };
 
-class NXOR : public Door
-{
+class NXOR : public Door {
 public:
   NXOR(const string &name) : Door(name, 2) {}
   bool SetInput() {}

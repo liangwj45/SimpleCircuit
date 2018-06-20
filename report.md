@@ -30,7 +30,7 @@ class Door
 	bool operator|(Door &other);
 	bool operator~();
 	bool operator^(Door &other);
-
+  
   private:
   	...
 }
@@ -60,7 +60,7 @@ bool Door::operator^(Door &other)
 ####继承和多态
 
 - 构造一个抽象类，各类门对该抽象类公有继承
-- 派生类对 GetState()等函数进行重写，通过基类指针调用不同版本的函数实现多态
+- 派生类对GetState()等函数进行重写，通过基类指针调用不同版本的函数实现多态
 
 ```c++
 class Door
@@ -69,7 +69,7 @@ class Door
 	...
 	// 派生类对GetState()函数进行重写，通过基类指针调用不同版本的函数实现多态
 	virtual bool GetState() = 0;
-
+  
   private:
   	...
 }
@@ -119,12 +119,13 @@ bool OR::GetState()
 }
 
 ...
+
 ```
 
 ####对异常的处理
 
 - 能对环进行简单的检测，并抛出异常
-- UI 添加捕获输入时的异常，比如需要输出数字时输入字符，捕获异常避免程序崩溃
+- UI添加捕获输入时的异常，比如需要输出数字时输入字符，捕获异常避免程序崩溃
 - 捕获输入门名称错误的异常，反馈给用户
 
 ```c++
@@ -140,7 +141,7 @@ catch (...)
 	cout << "Input error" << endl;
 }
 
-// circuit.cpp
+//circuit.cpp
 // 添加连接
 bool Circuit::Connect(const string &a, const string &b)
 {
@@ -182,5 +183,5 @@ bool Door::Connect(Door &other)
 - 增加了与非门、或非门和同或门
 - 支持多输入门，多个输入允许部分悬空
 - 添加无效电平，输出不满足条件时，输出为无效电平
-- UI 添加捕获输入时的异常，比如需要输出数字时输入字符，捕获异常避免程序崩溃
+- UI添加捕获输入时的异常，比如需要输出数字时输入字符，捕获异常避免程序崩溃
 - 捕获输入门名称错误的异常，反馈给用户
